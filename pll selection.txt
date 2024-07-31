@@ -1,0 +1,171 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date:    12:30:25 03/20/2023 
+// Design Name: 
+// Module Name:    clk_selection 
+// Project Name: 
+// Target Devices: 
+// Tool versions: 
+// Description: 
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments: 
+//
+//////////////////////////////////////////////////////////////////////////////////
+module clk_selection(clk, reset, dip_switches,bit_clk, byte_clk);
+input clk, reset;
+input [1:8] dip_switches;
+output reg bit_clk='b0;
+output byte_clk;	
+
+reg [2:0] bit_counter = 'd0; 
+	 
+	 
+  pll main_pll
+   (// Clock in ports
+    .CLK_IN1(clk),      // IN
+    // Clock out ports
+    .CLK_OUT1(clk_160),     // OUT
+    .CLK_OUT2(clk_400),     // OUT
+    .CLK_OUT3(clk_16),     // OUT
+    // Status and control signals
+    .RESET(reset),// IN
+    .POWER_DOWN(1'b0),   // IN
+    .LOCKED());
+	 
+	 always @(*)
+	 begin
+	 case(dip_switches)
+	 
+		0 : bit_clk <= clk_160;
+		1 : bit_clk <= clk_400;
+		2 : bit_clk <= clk_16;
+		3 : bit_clk <= clk_160; 
+		default : bit_clk <= clk;
+		
+	 endcase 
+	 end
+		
+		//Place BUFG with input as bit_counter[2] & output as bYTE_clk
+			BUFG BUFG_inst (
+				.O(byte_clk), // 1-bit output: Clock buffer output
+				.I(bit_counter[2])  // 1-bit input: Clock buffer input
+			);
+			
+			
+always @(posedge bit_clk) //Modified
+begin
+if(reset)
+bit_counter[2:0] <= 'd0;
+else
+bit_counter[2:0] <= bit_counter[2:0] + 1;
+end
+endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date:    12:30:25 03/20/2023 
+// Design Name: 
+// Module Name:    clk_selection 
+// Project Name: 
+// Target Devices: 
+// Tool versions: 
+// Description: 
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments: 
+//
+//////////////////////////////////////////////////////////////////////////////////
+module clk_selection(clk, reset, dip_switches,bit_clk, byte_clk);
+input clk, reset;
+input [1:8] dip_switches;
+output reg bit_clk='b0;
+output byte_clk;	
+
+reg [2:0] bit_counter = 'd0; 
+	 
+	 
+  pll main_pll
+   (// Clock in ports
+    .CLK_IN1(clk),      // IN
+    // Clock out ports
+    .CLK_OUT1(clk_160),     // OUT
+    .CLK_OUT2(clk_400),     // OUT
+    .CLK_OUT3(clk_16),     // OUT
+    // Status and control signals
+    .RESET(reset),// IN
+    .POWER_DOWN(1'b0),   // IN
+    .LOCKED());
+	 
+	 always @(*)
+	 begin
+	 case(dip_switches)
+	 
+		0 : bit_clk <= clk_160;
+		1 : bit_clk <= clk_400;
+		2 : bit_clk <= clk_16;
+		3 : bit_clk <= clk_160; 
+		default : bit_clk <= clk;
+		
+	 endcase 
+	 end
+		
+		//Place BUFG with input as bit_counter[2] & output as bYTE_clk
+			BUFG BUFG_inst (
+				.O(byte_clk), // 1-bit output: Clock buffer output
+				.I(bit_counter[2])  // 1-bit input: Clock buffer input
+			);
+			
+			
+always @(posedge bit_clk) //Modified
+begin
+if(reset)
+bit_counter[2:0] <= 'd0;
+else
+bit_counter[2:0] <= bit_counter[2:0] + 1;
+end
+endmodule
+

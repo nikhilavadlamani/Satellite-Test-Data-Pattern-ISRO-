@@ -1,0 +1,40 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date:    09:49:32 03/20/2023 
+// Design Name: 
+// Module Name:    define 
+// Project Name: 
+// Target Devices: 
+// Tool versions: 
+// Description: 
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments: 
+//
+//////////////////////////////////////////////////////////////////////////////////
+`define Carto2C 0;
+ `define Carto3 1;
+ `define Scatsat1 2;
+ `define RISAT1A 3;
+ 
+ `define Carto2C_framelength 17'd2056;
+ `define Carto2C_linecounter_position 17'd16;
+ `define Carto2C_linecounter_width 3'd4;
+ 
+ `define Carto3_framelength 17'd2044;
+ `define Carto3_linecounter_position 17'd10;
+ `define Carto3_linecounter_width 3'd4;
+ 
+ `define Scatsat1_framelength 17'd1279;
+ `define Scatsat1_linecounter_position 17'd6;
+ `define Scatsat1_linecounter_width 3'd1;
+ 
+ `define RISAT1A_framelength 17'd2056;
+ `define RISAT1A_linecounter_position 17'd16;
+ `define RISAT1A_linecounter_width 3'd4; 

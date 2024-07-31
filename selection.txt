@@ -1,0 +1,68 @@
+`timescale 1ns / 1ps
+`include "define.v"
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date:    09:50:36 03/20/2023 
+// Design Name: 
+// Module Name:    selection 
+// Project Name: 
+// Target Devices: 
+// Tool versions: 
+// Description: 
+//
+// Dependencies: 
+//
+// Revision: 
+// Revision 0.01 - File Created
+// Additional Comments: 
+//
+//////////////////////////////////////////////////////////////////////////////////
+module selection(dip_switches,reset,clk,framelength,linecounter_position,linecounter_width);
+ input [1:8] dip_switches;
+ input reset,clk;
+ output reg [11:0] framelength = 'd0;
+ output reg [4:0] linecounter_position = 'd0;
+ output reg [2:0] linecounter_width ='d0;
+ 
+ always @(posedge clk)
+ begin
+  if(reset)
+	begin
+	framelength[11:0] <= 'd0;
+	linecounter_position <= 'd0;
+	linecounter_width <= 'd0;
+	end
+  else
+	begin
+   case(dip_switches)
+	  0: begin
+		  framelength <= `Carto2C_framelength;
+	     linecounter_position <= `Carto2C_linecounter_position;
+		  linecounter_width <= `Carto2C_linecounter_width;
+		  end
+	  1: begin
+		  framelength <= `Carto3_framelength;
+	     linecounter_position <= `Carto3_linecounter_position;
+		  linecounter_width <= `Carto3_linecounter_width;
+		  end
+	  2: begin
+		  framelength <= `Scatsat1_framelength;
+	     linecounter_position <= `Scatsat1_linecounter_position;
+		  linecounter_width <= `Scatsat1_linecounter_width;
+		  end
+	  3: begin
+		  framelength <= `RISAT1A_framelength;
+	     linecounter_position <= `RISAT1A_linecounter_position;
+		  linecounter_width <= `RISAT1A_linecounter_width;
+		  end
+	  default: begin 
+		  framelength <= `RISAT1A_framelength;
+	     linecounter_position <= `RISAT1A_linecounter_position;
+		  linecounter_width <= `RISAT1A_linecounter_width;	  
+			end
+	endcase
+	end
+end
+endmodule 

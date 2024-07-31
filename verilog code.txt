@@ -1,0 +1,213 @@
+`timescale 1ns  1ps
+
+ Company 
+ Engineer 
+ 
+ Create Date    093805 03202023 
+ Design Name 
+ Module Name    Verilog 
+ Project Name 
+ Target Devices 
+ Tool versions 
+ Description 
+
+ Dependencies 
+
+ Revision 
+ Revision 0.01 - File Created
+ Additional Comments 
+
+
+module Verilog(clk_p,clk_n,reset,out_bit,dip_switches,LCD,LEDS,bit_clk);
+  input [18] dip_switches;
+  inout[60] LCD;
+  output [18] LEDS;
+  input clk_p,clk_n,reset;
+ 
+  output out_bit; Modified
+  output bit_clk;
+ 
+  reg[110] bytecounter = 0;
+  reg[30] bit_counter = 0;
+  reg fs_signal = 'b0;
+  reg linecounter_signal = 'b0;
+  reg videodata_signal = 'b0;
+  reg linecounter_com = 'b0;
+  reg[310] linecounter = 'd0;
+  reg [40] lc_counter = 'd0;
+ 
+  wire tx,rx;
+  wire UART_in,UART_out;
+ 
+  reg [115] LEDS_reg = 0;
+  assign LEDS = LEDS_reg;
+
+reg[70] data_out = 0;
+reg[70] rot_reg = 0;
+reg[70] init_reg = 0;
+
+wire [110] framelength;
+wire [40] linecounter_position;
+wire [20] linecounter_width;
+ 
+ 
+     IBUFDS #(
+      .DIFF_TERM(FALSE),        Differential Termination
+      .IOSTANDARD(DEFAULT)      Specify the input IO standard
+   ) clk_buf (
+      .O(clk),   Buffer output
+      .I(clk_p),   Diff_p buffer input (connect directly to top-level port)
+      .IB(clk_n)  Diff_n buffer input (connect directly to top-level port)
+   );
+
+Parallel to serial converter
+always @(posedge bit_clk) Modified
+begin
+ if(reset)
+  bit_counter[20] = 'd0;
+ else
+  bit_counter[20] = bit_counter[20] + 1;
+end
+
+
+		always @(posedge bit_clk) Modified
+		begin
+		 if(reset)
+		 begin
+		  init_reg[70] = 'd0;
+		  rot_reg[70] = 'd0;
+		 end
+		 else
+		 begin
+		  init_reg[70] = data_out[70];
+		  rot_reg[70] = (bit_counter[30] = 'd7)  init_reg  {rot_reg[60],1'b0};
+		  rot_reg[70] = (bit_counter[30] == 7)  init_reg  {rot_reg[60],1'b0};
+       end
+		end
+
+
+		assign out_bit = rot_reg[7];
+		
+
+		BDH data Generaion 
+		 
+		always @(posedge byte_clk) Modified
+		begin
+		if(((bytecounter=0)&&(bytecounter3))(bytecounter==(framelength - 1)))frame signal
+		if(((bytecounter=0)&&(bytecounter4)))
+			fs_signal=1;
+		else
+			fs_signal=0;
+		end
+
+		always @(posedge byte_clk)
+		begin
+		if((bytecounter(linecounter_position - 1)) && (bytecounter(linecounter_position + linecounter_width)))line counter signal
+			linecounter_signal=1;
+		else
+			linecounter_signal=0;
+		end
+
+		always @(posedge byte_clk)
+		begin
+		if((bytecounter=(linecounter_position + linecounter_width)) && (bytecounter=(framelength-1)))video data signal
+			videodata_signal=1;
+		else
+			videodata_signal=0;
+		end
+
+		always @(posedge byte_clk)
+		begin
+		if(reset)
+		  bytecounter=0;
+		else if(bytecounter==(framelength-1))
+		  bytecounter=0;
+		else
+		  bytecounter=bytecounter+1;
+		end
+
+		always @(posedge byte_clk)
+		begin
+		if(fs_signal==1)
+		case(bytecounter)
+			   9'd1data_out=8'h1A;
+				9'd2data_out=8'hCF;
+				9'd3data_out=8'hFC;
+				9'd4data_out=8'h1D;
+		endcase
+		else if(linecounter_signal==1)
+		case(lc_counter)
+			   5'd0data_out=linecounter[3124];
+				5'd1data_out=linecounter[2316];
+				5'd2data_out=linecounter[158];
+				5'd3data_out=linecounter[70];
+		endcase
+		else if(videodata_signal==1)
+		  data_out=bytecounter[70];
+		else
+			data_out=bytecounter[70];
+		end
+		
+		always@(posedge byte_clk)
+		begin
+		if((linecounter_signal==1)&&(bytecounter==(linecounter_position+linecounter_width)))
+			linecounter_com=1;
+		else
+			linecounter_com=0;
+		end
+
+		always @(posedge byte_clk)
+		begin
+		if(linecounter_com == 1)
+			linecounter=linecounter+1;
+		else
+			linecounter=linecounter;
+		end   
+		
+		Linecounter byte counter
+			always @(posedge byte_clk)
+			begin
+				if(reset)
+					lc_counter = 'd0;
+				else if(linecounter_signal == 1'b1)
+					lc_counter = lc_counter + 'd1;
+				else
+					lc_counter = 'd0;
+			end
+		
+ Instantiate the module
+( BOX_TYPE = user_black_box )
+Microblaze Mb_inst (
+    .RS232_Uart_1_sout(UART_out), 
+    .RS232_Uart_1_sin(UART_in), 
+    .RESET(reset), 
+    .LEDs_8Bits_TRI_O(LEDS[18]), 
+    .DIP_Switches_8Bits_TRI_I(dip_switches[18]), 
+    .LCD_GPIO_IO_pin(LCD[60]), 
+    .CLK(clk)
+    );		
+	 
+	 
+
+
+ Instantiate the module
+clk_selection pll (
+    .clk(clk), 
+    .reset(reset), 
+    .dip_switches(dip_switches), 
+    .bit_clk(bit_clk), 
+    .byte_clk(byte_clk)
+    );
+	 
+ Instantiate the module
+selection satsel_inst (
+    .dip_switches(dip_switches), 
+    .reset(reset), 
+    .clk(clk), 
+    .framelength(framelength), 
+    .linecounter_position(linecounter_position), 
+    .linecounter_width(linecounter_width)
+    );
+
+		
+endmodule
